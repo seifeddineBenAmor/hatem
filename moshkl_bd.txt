@@ -1,0 +1,3 @@
+https://stackoverflow.com/questions/23883163/phpmyadmin-cannot-connect-to-mysql-server
+http://www.youtube.com/watch?v=BgcW4h6ZAro&t=7m21s
+https://stackoverflow.com/questions/25174183/warning-mysqli-connect-hy000-1045-access-denied-for-user-usernameloca
