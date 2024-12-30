@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UrbanGYM - Videos</title>
+    <style>
+        body { text-align: center; background-color: #f4f4f4; }
+        ul { list-style-type: none; padding: 0; display: flex; justify-content: center; flex-wrap: wrap; gap: 20px; }
+        li { margin: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Videos for Day {{ day }}</h1>
+    <ul>
+        {% for exercice in exercices %}
+        <li>
+            <a href="{{ url_for('watch_video', filename=exercice[1],videos=videos) }}">{{ exercice[0] }}</a>
+        </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

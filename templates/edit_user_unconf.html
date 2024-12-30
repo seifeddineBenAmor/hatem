@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit User</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .button-link {
+            display: inline-block;
+            text-align: center;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .button-link:hover {
+            background-color: #45a049;
+        }
+        form {
+            max-width: 600px;
+            margin: auto;
+        }
+        form div {
+            margin-bottom: 15px;
+        }
+        label {
+            font-weight: bold;
+        }
+        input, select, textarea, button {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .inline-group {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            margin-bottom: 15px;
+        }
+        .inline-group input {
+            width: auto;
+            margin-right: 10px;
+        }
+        .inline-group label {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+
+<a href="{{ url_for('unconfirmed_users') }}" class="button-link">Back to Unconfirmed Users</a>
+
+<h1>Edit User</h1>
+
+<form method="POST" enctype="multipart/form-data">
+    <div>
+        <label for="UserImage">User image:</label>
+        <input type="file" id="UserImage" name="UserImage" required>
+    </div>
+    <div>
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" value="{{ user.name }}" required>
+    </div>
+    <div>
+        <label for="familyName">family Name:</label>
+        <input type="text" id="familyName" name="familyName" value="{{ user.familyName }}" required>
+    </div>
+    <div>
+        <label for="gender">Gender:</label>
+        <select id="gender" name="gender" required>
+            <option value="Male" {% if user.gender == 'Male' %}selected{% endif %}>Male</option>
+            <option value="Female" {% if user.gender == 'Female' %}selected{% endif %}>Female</option>
+        </select>
+    </div>
+    <div>
+        <label for="dob">Date of Birth:</label>
+        <input type="date" id="dob" name="dob" value="{{ user.dateOfBirth.strftime('%Y-%m-%d') if user.dateOfBirth else 'N/A' }}" required>
+    </div>
+    <div>
+        <label for="exd">Expiration Date:</label>
+        <input type="date" id="exd" name="exd" value="{{ user.expire_date.strftime('%Y-%m-%d') if user.expire_date else 'N/A' }}" required>
+    </div>
+    <div>
+        <label for="program_id">Program:</label>
+        <select id="program_id" name="program_id" required>
+            {% for program in programs %}
+                <option value="{{ program.id }}" {% if user.program_id == program.id %}selected{% endif %}>{{ program.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div>
+        <label for="remarks">Remarks:</label>
+        <textarea id="remarks" name="remarks">{{ user.remarks }}</textarea>
+    </div>
+    <div class="inline-group">
+        <label for="is_admin">Is Admin</label>
+        <input type="checkbox" id="is_admin" name="is_admin" {% if user.is_admin %}checked{% endif %}>
+        
+    </div>
+
+    <button type="submit">Save Changes</button>
+</form>
+
+</body>
+</html>

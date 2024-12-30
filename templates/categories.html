@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UrbanGYM - Categories</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-image: url("{{ url_for('static', filename='thumbnails/bg.png') }}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            color: white;
+            min-height: 100vh;
+        }
+        h1 {
+            margin-top: 20px;
+            text-align: center;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+        li {
+            margin: 10px;
+            text-align: center; /* Center the content inside the list item */
+        }
+        img {
+            width: 150px;
+            height: auto;
+            border-radius: 8px;
+            transition: transform 0.3s;
+        }
+        img:hover {
+            transform: scale(1.05);
+            cursor: pointer;
+        }
+        p {
+            font-family: "Myriad Pro", "sans-serif";
+            font-size: 30px; /* Adjusted font size for better fit */
+            color: white;
+            margin: 10px 0 0; /* Adds spacing between the image and text */
+        }
+        .return-home { /* bouton l home*/
+            margin-bottom: 20px;
+            padding: 10px 15px;
+            background-color: #28a745;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <a href="/" class="return-home">Return to Homepage</a>
+    <h1>Categories for Day {{ day }}</h1>
+    <ul>
+        {% for category in categories %}
+        <li>
+            <a href="{{ url_for('view_category', category_id=category[0], day=day) }}">
+                {% if gender == 'female' %}
+                <img src="{{ url_for('static', filename='thumbnails/'+category[3]) }}" alt="{{ category[1] }}">
+                {% else %}
+                <img src="{{ url_for('static', filename='thumbnails/'+category[2]) }}" alt="{{ category[1] }}">
+                {% endif %}
+            </a>
+            <p>{{ category[1] }}</p>
+        </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

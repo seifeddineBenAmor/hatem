@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Users</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        h1 { text-align: center; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; font-weight: bold; }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+        tr:hover { background-color: #f1f1f1; }
+        form { display: inline; margin: 0; }
+        button { padding: 8px 12px; background-color: #4CAF50; color: white; border: none; cursor: pointer; }
+        button:hover { background-color: #45a049; }
+        a { display: block; text-align: center; margin-top: 20px; color: #4CAF50; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        .return-home {
+            margin-bottom: 20px;
+            padding: 10px 15px;
+            background-color: #28a745;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+        .return-home:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <a href="/" class="return-home">Return to Homepage</a>
+    <h1>Active Users</h1>
+    <table id="userTable">
+        <thead>
+            <tr>
+                <th>Photo</th>
+                <th>Name</th>
+                <th>Family name</th>
+                <th>Gender</th>
+                <th>Age</th>
+                <th>Date of Birth</th>
+                <th>Remarks</th>
+                <th>Program</th>
+                <th>Expiration Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if confirmed_users %}
+            {% for user in confirmed_users %}
+            <tr data-dob="{{ user.dateOfBirth.strftime('%Y-%m-%d') if user.dateOfBirth else '' }}">
+                <td>
+                    <img src="{{ url_for('static', filename='users/' + user.Photo) if user.Photo else url_for('static', filename='users/no_image.png') }}" 
+                         alt="{{  user.Photo }}" 
+                         width="100" 
+                         height="100">
+                </td>
+                
+                                <td>{{ user.name }}</td>
+                <td>{{ user.familyName }}</td>
+                <td>{{ user.gender }}</td>
+                <td class="age">Loading...</td>
+                <td>{{ user.dateOfBirth.strftime('%Y-%m-%d') if user.dateOfBirth else 'N/A' }}</td>
+                <td>{{ user.remarks or 'None' }}</td>
+                <td>
+                    {% set program = programs | selectattr("id", "equalto", user.program_id) | first %}
+                    {{ program.name if program else "None" }}
+                </td>
+                <td class="expiration-date" data-expiration="{{ user.expire_date }}">{{ user.expire_date }}</td>
+                <td>
+                    <form action="{{ url_for('unconfirm_user', user_id=user.id) }}" method="POST">
+                        <button type="submit">Stop Confirmation</button>
+                    </form>
+                    <form action="{{ url_for('edit_user_conf', user_id=user.id) }}" method="GET">
+                        <button type="submit">Edit</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+            {% else %}
+            <tr>
+                <td colspan="9" style="text-align: center;">No confirmed users.</td>
+            </tr>
+            {% endif %}
+        </tbody>
+    </table>
+</body>
+
+<script>
+    // Function to calculate age from date of birth
+    function calculateAge(dob) {
+        const today = new Date();
+        const birthDate = new Date(dob);
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const monthDifference = today.getMonth() - birthDate.getMonth();
+        if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+        }
+        return age;
+    }
+
+    // Function to calculate expiration status
+    function calculateExpirationStatus(expirationDate) {
+        const today = new Date();
+        const expDate = new Date(expirationDate);
+
+        const timeDifference = expDate - today;
+        const daysDifference = Math.ceil(timeDifference / (1000 * 60 * 60 * 24));
+
+        if (daysDifference === 1) {
+            return `Tomorrow (${expirationDate})`;
+        } else if (daysDifference === 0) {
+            return `Today (${expirationDate})`;
+        } else if (daysDifference < 0) {
+            return `Already ${Math.abs(daysDifference)} days ago (${expirationDate})`;
+        } else {
+            return `In ${daysDifference} days (${expirationDate})`;
+        }
+    }
+
+    // Update the table with calculated ages and expiration statuses
+    document.addEventListener('DOMContentLoaded', () => {
+        const rows = document.querySelectorAll('#userTable tbody tr');
+        rows.forEach(row => {
+            // Calculate and update age
+            const dob = row.dataset.dob;
+            const ageCell = row.querySelector('.age');
+            if (dob) {
+                const age = calculateAge(dob);
+                ageCell.textContent = age;
+            } else {
+                ageCell.textContent = 'N/A';
+            }
+
+            // Calculate and update expiration status
+            const expirationCell = row.querySelector('.expiration-date');
+            const expirationDate = expirationCell.dataset.expiration;
+            if (expirationDate) {
+                expirationCell.textContent = calculateExpirationStatus(expirationDate);
+            } else {
+                expirationCell.textContent = 'N/A';
+            }
+        });
+    });
+</script>
+</html>

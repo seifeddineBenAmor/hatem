@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Breaks</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        form {
+            max-width: 600px;
+            margin: auto;
+        }
+        form div {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        select, input, button {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+    <script>
+        function updateDuration() {
+            // Get values from both select elements
+            const number = document.getElementById("duration_number").value;
+            const unit = document.getElementById("duration_unit").value;
+
+            // Concatenate the values and set the hidden input field
+            const duration = `${number} ${unit}`;
+            document.getElementById("duration").value = duration;
+        }
+    </script>
+</head>
+<body>
+
+<h1>Add Breaks</h1>
+
+<form method="POST" action="{{ url_for('add_break') }}" onsubmit="updateDuration()">
+    {% if error %}
+        <div style="color: red;">{{ error }}</div>
+    {% endif %}
+
+    <div>
+        <label for="duration">Breaks Duration:</label>
+        <div style="display: flex; gap: 10px;">
+            <select id="duration_number" onchange="updateDuration()" required>
+                <option value="">Select number</option>
+                {% for i in range(1, 61) %}
+                <option value="{{ i }}">{{ i }}</option>
+                {% endfor %}
+            </select>
+            <select id="duration_unit" onchange="updateDuration()" required>
+                <option value="">Select unit</option>
+                <option value="second(s)">Second(s)</option>
+                <option value="minute(s)">Minute(s)</option>
+                <option value="hour(s)">Hour(s)</option>
+            </select>
+        </div>
+        <!-- Hidden input to store the concatenated value -->
+        <input type="hidden" id="duration" name="duration">
+    </div>
+
+    <div>
+        <label for="vid_path">Breaks Video Path:</label>
+        <input type="text" id="vid_path" name="vid_path" required>
+    </div>
+    <button type="submit">Add Breaks</button>
+</form>
+
+</body>
+</html>

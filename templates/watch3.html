@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UrbanGYM</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #000;
+            position: relative;
+        }
+        video {
+            width: 100%;
+            height: auto;
+            max-width: 100%;
+            max-height: 100vh;
+            border: none;
+        }
+        .nav-button {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100px;
+            background-color: rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            opacity: 0.05;
+            transition: opacity 0.2s;
+        }
+        .nav-button:hover {
+            opacity: 0.5;
+        }
+        .prev {
+            left: 0;
+            margin-left: 100px;
+        }
+        .next {
+            right: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="nav-button prev" onclick="navigate(-1)"></div>
+
+    <!-- Le lecteur vidéo avec auto-replay (loop) -->
+    <video controls autoplay loop id="videoPlayer">
+        <source src="/videos/{{ filename }}" type="video/mp4">
+        Votre navigateur ne prend pas en charge la balise vidéo.
+    </video>
+
+    <div class="nav-button next" onclick="navigate(1)"></div>
+
+    <script>
+        const videoPlayer = document.getElementById("videoPlayer");
+        const videoFiles = {{ videos | tojson }};
+        let currentIndex = videoFiles.indexOf("{{ filename }}");
+    
+        // Automatically request fullscreen mode
+        videoPlayer.addEventListener('loadeddata', () => {
+            if (videoPlayer.requestFullscreen) {
+                videoPlayer.requestFullscreen();
+            } else if (videoPlayer.webkitRequestFullscreen) { // For Safari
+                videoPlayer.webkitRequestFullscreen();
+            } else if (videoPlayer.msRequestFullscreen) { // For IE/Edge
+                videoPlayer.msRequestFullscreen();
+            }
+        });
+    
+        function navigate(direction) {
+            const newIndex = currentIndex + direction;
+            if (newIndex >= 0 && newIndex < videoFiles.length) {
+                currentIndex = newIndex;
+                window.location.href = `/watch/${videoFiles[currentIndex]}`;
+            }
+        }
+    </script>
+    
+</body>
+</html>

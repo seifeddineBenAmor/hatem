@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Response Success</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-image: url("{{ url_for('static', filename='thumbnails/bg.png') }}");
+            color: white;
+        }
+        h1 {
+            text-align: center;
+        }
+        .message-container {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            background-color: {{ 'green' if success else 'red' }};
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            opacity: 0.8;
+        }
+        .message {
+            font-size: 18px;
+            font-weight: bold;
+        }
+        a {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: white;
+            color: {{ 'green' if success else 'red' }};
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 5px;
+        }
+        a:hover {
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+    </style>
+</head>
+<body>
+
+<h1>{{ 'Success' if success else 'Error' }}</h1>
+
+<div class="message-container">
+    <p class="message">{{ message }}</p>
+    <a href="{{ url_for('register') }}"> Home </a>
+</div>
+
+</body>
+</html>

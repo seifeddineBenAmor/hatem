@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Exercises</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        form {
+            max-width: 600px;
+            margin: auto;
+            margin-bottom: 20px;
+        }
+        form div {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        input, select, button {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .delete-button {
+            background-color: #f44336;
+        }
+        .delete-button:hover {
+            background-color: #d32f2f;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            text-align: left;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .actions {
+            display: flex;
+            gap: 10px;
+        }
+        .actions form {
+            display: inline;
+        }
+        .return-home {
+            margin-bottom: 20px;
+            padding: 10px 15px;
+            background-color: #28a745;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <a href="/" class="return-home">Return to Homepage</a>
+
+<h1>Manage Exercises</h1>
+
+<!-- Button to add a new exercise -->
+<div style="text-align: center; margin-bottom: 20px;">
+    <a href="{{ url_for('add_exercise') }}">
+        <button>+ Add Exercise</button>
+    </a>
+</div>
+
+<!-- Filters -->
+<form method="GET">
+    <div>
+        <label for="category">Filter by Category:</label>
+        <select id="category" name="category">
+            <option value="">-- Select Category --</option>
+            {% for category in categories %}
+                <option value="{{ category.Id }}" 
+                        {% if request.args.get('category')|int == category.Id %}selected{% endif %}>
+                    {{ category.name }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div>
+        <label for="search">Search by Name or Code:</label>
+        <input type="text" id="search" name="search" placeholder="Enter name or code" 
+               value="{{ request.args.get('search', '') }}">
+    </div>
+
+    <button type="submit">Filter</button>
+</form>
+
+<!-- List of exercises -->
+<table>
+    <thead>
+        <tr>
+            <th>Code</th>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Description</th>
+            <th>Male video</th>
+            <th>Female video</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for exercise, category_name in exercises %}
+            <tr>
+                <td>{{ exercise.code }}</td>
+                <td>{{ exercise.name }}</td>
+                <td>{{ category_name }}</td>
+                <td>{{ exercise.description }}</td>
+                <td>{{ exercise.videoPath }}</td>
+                <td>{{ exercise.videoPath_female if  exercise.videoPath_female else 'no video'}}</td>
+
+                <td class="actions">
+                    <!-- Edit button -->
+                    <a href="{{ url_for('edit_exercise', code=exercise.code) }}">
+                        <button>Edit</button>
+                    </a>
+                    <!-- Delete button -->
+                    <form action="{{ url_for('delete_exercise', code=exercise.code) }}" method="POST">
+                        <button type="submit" class="delete-button" onclick="return confirm('Are you sure you want to delete this exercise?')">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+</body>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Category</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        form {
+            max-width: 600px;
+            margin: auto;
+        }
+        form div {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        input, button {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .return-home {
+            margin-bottom: 20px;
+            padding: 10px 15px;
+            background-color: #28a745;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+        
+    </style>
+</head>
+<body>
+    <a href="/" class="return-home">Return to Homepage</a>
+
+    <a href="/admin/categories" class="return-home">Return to Management page</a>
+<h1>Edit Category</h1>
+
+<form method="POST" enctype="multipart/form-data" action="{{ url_for('edit_category', category_id=category.Id) }}">
+<!--
+    <div>
+        <label for="id" hidden>Category ID (non-editable):</label>
+        <input type="text" id="id" name="id" value="{{ category.Id }}" readonly headen>
+    </div>
+-->
+    <div>
+        <label for="name">Category Name:</label>
+        <input type="text" id="name" name="name" value="{{ category.name }}" required>
+    </div>
+    <div>
+        <label for="icone_Path">Male image:</label>
+        <input type="file" id="icone_Path" name="icone_Path" required>
+    </div>
+    <div>
+        <label for="icone_Path_female">Female image:</label>
+        <input type="file" id="icone_Path_female" name="icone_Path_female" required>
+    </div>
+    <button type="submit">Save Changes</button>
+</form>
+
+</body>
+</html>

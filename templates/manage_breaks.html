@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage breaks</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table th, table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        table th {
+            background-color: #f4f4f4;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        form div {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        input, select, textarea, button {
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 8px 16px;
+            border: none;
+            cursor: pointer;
+        }
+        button.add {
+            background-color: #4CAF50;
+            color: white;
+        }
+        button.add:hover {
+            background-color: #45a049;
+        }
+        button.delete {
+            background-color: #f44336;
+            color: white;
+        }
+        button.delete:hover {
+            background-color: #d32f2f;
+        }
+        .filter-input {
+            width: 50%;
+            margin-right: 10px;
+        }
+        .filter-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Manage breaks</h1>
+
+{% if error %}
+    <div class="error" style="color: red; text-align: center;">{{ error }}</div>
+{% endif %}
+
+<!-- Add break Form and Filter -->
+<div class="filter-container">
+    <input type="text" class="filter-input" placeholder="Filter breaks..." id="filter" onkeyup="filterTable()">
+    <a href="{{ url_for('add_break') }}" class="add" style="text-decoration: none;">
+        <button type="button" class="add">Add Break</button>
+    </a>
+    
+</div>
+
+<!-- Existing breaks Table -->
+<table id="breaks-table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Duration</th>
+            <th>Video Path</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for break in breaks %}
+            <tr>
+                <td>{{ break.Id }}</td>
+                <td>{{ break.duration }}</td>
+                <td>{{ break.VidPath }}</td>
+                <td>
+                    <a href="{{ url_for('edit_break', break_id=break.Id) }}"style="display: inline;">
+                        <button type="button">Edit</button>
+                    </a>
+                    <form method="POST" action="{{ url_for('delete_break', break_id=break.Id) }}" style="display: inline;">
+                        <button type="submit" class="delete" onclick="return confirm('Are you sure you want to delete this break?')">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4" style="text-align: center;">No breaks available</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<script>
+    // JavaScript function for filtering table rows
+    function filterTable() {
+        const filter = document.getElementById("filter").value.toLowerCase();
+        const rows = document.querySelectorAll("#breaks-table tbody tr");
+
+        rows.forEach(row => {
+            const cells = Array.from(row.children);
+            const match = cells.some(cell => cell.innerText.toLowerCase().includes(filter));
+            row.style.display = match ? "" : "none";
+        });
+    }
+</script>
+
+</body>
+</html>

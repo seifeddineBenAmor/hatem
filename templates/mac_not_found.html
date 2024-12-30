@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MAC Address Not Found</title>
+</head>
+<body>
+    <h1>Please contact admin to activate the account</h1>
+    <form action="{{ url_for('register', mac_address=mac_address) }}" method="get">
+        <button type="submit">Register Now</button>
+    </form>
+</body>
+</html>

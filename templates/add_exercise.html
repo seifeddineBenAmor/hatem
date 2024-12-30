@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Exercise</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        form {
+            max-width: 600px;
+            margin: auto;
+        }
+        form div {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        input, select, textarea, button {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        textarea {
+            resize: vertical;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .error {
+            color: red;
+            margin-bottom: 15px;
+        }
+        .return-home {
+            margin-bottom: 20px;
+            padding: 10px 15px;
+            background-color: #28a745;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <a href="/" class="return-home">Return to Homepage</a>
+    <a href="/admin/exercises" class="return-home">Return to Management</a>
+<h1>Add Exercise</h1>
+
+<form method="POST" enctype="multipart/form-data">
+    {% if error %}
+        <div class="error">{{ error }}</div>
+    {% endif %}
+
+    <div>
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+    </div>
+
+    <div>
+        <label for="category">Category:</label>
+        <select id="category" name="category" required>
+            <option value="" disabled selected>-- Select Category --</option>
+            {% for category in categories %}
+                <option value="{{ category.Id }}">{{ category.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div>
+        <label for="description">Description:</label>
+        <textarea id="description" name="description" required></textarea>
+    </div>
+
+    <div>
+        <label for="video_path">Upload Video (Male version) :</label>
+        <input type="file" id="video_path" name="video_path" required>
+    </div>
+
+    <div>
+        <label for="video_path_female">Upload Video (Female ):</label>
+        <input type="file" id="video_path_female" name="video_path_female" required>
+    </div>
+
+    <button type="submit">Add Exercise</button>
+</form>
+
+</body>
+</html>

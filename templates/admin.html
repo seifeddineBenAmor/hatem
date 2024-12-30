@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Library</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-image: url("{{ url_for('static', filename='thumbnails/bg.png') }}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            color: white;
+            min-height: 100vh;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.6);
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .container div {
+            margin-bottom: 15px;
+        }
+        a button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        a button:hover {
+            background-color: #45a049;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        ul li {
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome to UrbanGYM {{ user.name }}!</h1>
+    <div class="container">
+        <ul>
+
+<style>
+  .admin-buttons {
+    display: flex;
+    gap: 15px;
+    margin: 20px 10px;
+  }
+  
+  .button {
+    padding: 10px 15px;
+    text-decoration: none;
+    color: #fff;
+    background: #007BFF;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 16px;
+  }
+  
+  .button:hover {
+    background: #0056b3;
+  }
+  .button2 {
+    padding: 10px 15px;
+    text-decoration: none;
+    color: #fff;
+    background: #4CAF50;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 16px;
+  }
+  
+  .button2:hover {
+    background: #45a049;
+  }
+  .bell-btn {
+    position: relative;
+  }
+  
+  .bell-icon {
+    font-size: 18px;
+  }
+  
+  .badge {
+    position: absolute;
+    top: -5px;
+    right: -10px;
+    background: red;
+    color: white;
+    border-radius: 50%;
+    padding: 5px 10px;
+    font-size: 12px;
+    font-weight: bold;
+  }
+</style>
+<style>
+    .admin-buttons {
+      display: flex;
+      gap: 15px;
+      margin: 20px 0;
+    }
+    
+    .button {
+      padding: 10px 15px;
+      text-decoration: none;
+      color: #fff;
+      background: #007BFF;
+      border-radius: 5px;
+      text-align: center;
+      font-size: 16px;
+    }
+    
+    .button:hover {
+      background: #0056b3;
+    }
+    
+    .bell-btn {
+      position: relative;
+    }
+    
+    .bell-icon {
+      font-size: 18px;
+    }
+    
+    .badge {
+      position: absolute;
+      top: -5px;
+      right: -10px;
+      background: red;
+      color: white;
+      border-radius: 50%;
+      padding: 5px 10px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+  </style>
+  
+<div class="admin-buttons">
+    <!-- Confirmed Users Button -->
+    <a href="/admin/confirmed" class="button confirmed-users-btn">Confirmed Users</a>
+    
+    <!-- Unconfirmed Users Button with Badge -->
+    <a href="/admin/unconfirmed" class="button bell-btn">
+      <span class="bell-icon">🔔</span>
+      <span class="badge">{{ unconfirmed_count }}</span>
+    </a>
+  </div>
+  <li>
+    <div class="admin-buttons">
+    <a href="{{ url_for('manage_programs') }}">
+        <button>Manage Programs</button>
+    </a>
+
+    <a href="/admin/expired_program" class="button2 bell-btn">
+      <span class="bell-icon">🔔</span>
+      <span class="badge">{{ expired_program_count }}</span>
+    </a>
+  </div>
+</li>
+            <li>
+                <a href="{{ url_for('manage_exercises') }}">
+                    <button>Manage Exercises</button>
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('manage_categories') }}">
+                    <button>Manage Categories</button>
+                </a>
+            </li>
+            <!--<li>
+                <a href="{{ url_for('manage_breaks') }}">
+                    <button>Manage Breaks</button>
+                </a>
+            </li> -->
+        </ul>
+    </div>
+</body>
+</html>

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Program Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            table-layout: fixed;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        table th, table td {
+            width: 14.28%;
+            box-sizing: border-box;
+            padding: 10px;
+            text-align: left;
+            vertical-align: top;
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+        .exercise-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        .exercise {
+            padding: 10px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .add-btn {
+            display: block;
+            margin: 10px auto;
+            padding: 5px;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+            text-align: center;
+        }
+        .add-btn {
+            background-color: #28a745;
+            color: white;
+        }
+        .add-btn:hover {
+            visibility: visible;
+        }
+        .delete-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            font-size: 16px;
+            text-align: center;
+            line-height: 25px;
+            cursor: pointer;
+        }
+        .delete-btn:hover {
+            background-color: #c82333;
+        }
+
+        .return-back {
+            margin-bottom: 20px;
+            padding: 10px 15px;
+            background-color: #28a745;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+        .return-back:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <a href="{{ url_for('manage_programs') }}" class="return-back">Back to Programs</a>
+    <h1>Details for Program: {{ program.name }}</h1>
+    <p>Created by: {{ program.creator }}</p>
+
+    <h2>Details</h2>
+    <table>
+        <thead>
+            <tr>
+                {% for day in range(1, 8) %}
+                <th>Day {{ day }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                {% for day in range(1, 8) %}
+                <td>
+                    <!-- Add button at the start of the day -->
+                    <button class="add-btn" onclick="showAddExerciseModal({{ day }}, 0)">Add to Start</button>
+                    
+                    <!-- Add existing exercises and buttons between them -->
+                    {% for detail in details if detail.day == day %}
+                        <div class="exercise-container">
+                            <div class="exercise">
+                                {{ detail.sequence }} : {{ detail.name }}
+                                <br>
+                                 ({{ detail.code }})
+                                <!-- Delete button for this exercise -->
+                                <form method="POST" action="{{ url_for('remove_exercise', program_id=program.id) }}" style="display:inline;">
+                                    <input type="hidden" name="exercice_code" value="{{ detail.code }}">
+                                    <input type="hidden" name="day" value="{{ detail.day }}">
+                                    <input type="hidden" name="sequence" value="{{ detail.sequence }}">
+                                    <button type="submit" class="delete-btn">X</button>
+                                </form>
+                            </div>
+                            <button class="add-btn" onclick="showAddExerciseModal({{ day }}, {{ detail.sequence }})">Add Here</button>
+                        </div>
+                    {% endfor %}
+                    
+                    <!-- Add button at the end of the day -->
+                    <!--<button class="add-btn" onclick="showAddExerciseModal({{ day }}, 'end')">Add at End</button>-->
+                </td>
+                {% endfor %}
+            </tr>
+        </tbody>
+    </table>
+
+
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul>
+            {% for category, message in messages %}
+                <li class="{{ category }}">{{ message }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+<!-- Modal -->
+<div id="addExerciseModal" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); padding:20px; background:white; border:1px solid #ddd; border-radius:8px; z-index:1000;">
+    <h3>Add Exercise</h3>
+    <form id="addExerciseForm" method="post">
+        <input type="hidden" name="day" id="modalDay">
+        <input type="hidden" name="sequence" id="modalSequence">
+
+        <!-- Category Selection -->
+        <label for="modalCategory">Category:</label>
+        <select id="modalCategory" onchange="updateExerciseDropdown()" style="width:100%; margin-bottom:10px;">
+            <option value="">--Select Category--</option>
+            {% for category in data.keys() %}
+            <option value="{{ category }}">{{ category }}</option>
+            {% endfor %}
+        </select>
+
+        <!-- Exercise Selection -->
+        <label for="modalExerciceCode">Exercise:</label>
+        <select name="exercice_code" id="modalExerciceCode" style="width:100%; max-height:200px; overflow-y:auto;">
+            <option value="">--Select Exercise--</option>
+        </select>
+
+        <button type="submit" style="margin-top:10px;">Add</button>
+    </form>
+    <button onclick="closeAddExerciseModal()" style="margin-top:10px; background:#dc3545; color:white; border:none; padding:5px 10px; cursor:pointer;">Cancel</button>
+</div>
+
+<script>
+    function updateExerciseDropdown() {
+        const category = document.getElementById("modalCategory").value;
+        const data = {{ data|tojson }};
+        const exerciseDropdown = document.getElementById("modalExerciceCode");
+
+        exerciseDropdown.innerHTML = '<option value="">--Select Exercise--</option>';
+
+        if (data[category]) {
+            data[category].forEach(item => {
+                const option = document.createElement("option");
+                option.value = item.code; // Pass exercise code as value
+                option.textContent = item.name; // Display exercise name in the dropdown
+                exerciseDropdown.appendChild(option);
+            });
+        }
+    }
+
+    function showAddExerciseModal(day, sequence) {
+        document.getElementById('modalDay').value = day;
+        document.getElementById('modalSequence').value = sequence + 1;
+        document.getElementById('addExerciseModal').style.display = 'block';
+    }
+
+    function closeAddExerciseModal() {
+        document.getElementById('addExerciseModal').style.display = 'none';
+    }
+</script>
+
+
+</body>
+</html>

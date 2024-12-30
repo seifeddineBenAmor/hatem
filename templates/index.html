@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Days</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url("{{ url_for('static', filename='thumbnails/bg.png') }}");
+            background-size: cover;
+            background-position: center;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+    
+        h1 {
+            margin-top: 20px;
+            text-align: center;
+        }
+    
+        .carousel-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 70vh; /* Reduced height for higher positioning */
+        width: 100%;
+        overflow: hidden;
+        margin-top: 10px; /* Reduced margin-top to move cards higher */
+    }
+        
+    
+        .carousel {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            gap: 20px;
+            padding: 0 20%;
+            width: 100%;
+            scroll-behavior: auto; /* Disable smooth scrolling for better responsiveness */
+        }
+    
+        .carousel::-webkit-scrollbar {
+            display: none;
+        }
+    
+        .card {
+            flex: 0 0 70%;
+            max-width: 400px;
+            height: 250px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #333;
+            scroll-snap-align: center;
+            transition: transform 0.1s ease, opacity 0.1s ease; /* Shortest transitions for responsiveness */
+        }
+    
+        .card a {
+            text-decoration: none;
+            color: inherit;
+        }
+    
+        .card:not(.active) {
+            transform: scale(0.9);
+            opacity: 0.8;
+        }
+    </style>
+    
+</head>
+<body>
+    <h1>Welcome, {{ user.name }}!</h1>
+    <h2>Select a Day</h2>
+    <div class="carousel-wrapper">
+        <div class="carousel">
+            {% for day in days %}
+            <div class="card">
+                <a href="{{ url_for('view_day', day=day) }}">Day {{ day }}</a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script>
+        const carousel = document.querySelector('.carousel');
+        const cards = document.querySelectorAll('.card');
+        let activeCard = null;
+        let isScrolling = false;
+    
+        // Initialize and set the first card as active
+        window.onload = () => {
+            if (cards.length > 0) {
+                setActiveCard(cards[0]);
+            }
+        };
+    
+        // Scroll event handler
+        carousel.addEventListener('scroll', () => {
+            if (!isScrolling) {
+                isScrolling = true;
+                window.requestAnimationFrame(() => {
+                    const closestCard = getClosestCard();
+                    if (closestCard && closestCard !== activeCard) {
+                        setActiveCard(closestCard);
+                    }
+                    isScrolling = false;
+                });
+            }
+        });
+    
+        // Determine the closest card to the center of the carousel
+        function getClosestCard() {
+            const carouselCenter = carousel.offsetWidth / 2;
+            let closestCard = null;
+            let closestDistance = Infinity;
+    
+            cards.forEach((card) => {
+                const cardCenter = card.offsetLeft + card.offsetWidth / 2 - carousel.scrollLeft;
+                const distance = Math.abs(carouselCenter - cardCenter);
+    
+                if (distance < closestDistance) {
+                    closestDistance = distance;
+                    closestCard = card;
+                }
+            });
+    
+            return closestCard;
+        }
+    
+        // Set the active card and center it
+        function setActiveCard(card) {
+            if (!card) return;
+    
+            activeCard = card;
+            const offset = card.offsetLeft - carousel.offsetWidth / 2 + card.offsetWidth / 2;
+    
+            // Position without animation for direct alignment
+            carousel.scrollLeft = offset;
+    
+            // Update visual styles
+            updateActiveClass(card);
+        }
+    
+        // Update styles to reflect the active card
+        function updateActiveClass(activeCard) {
+            cards.forEach((card) => card.classList.remove('active'));
+            activeCard.classList.add('active');
+        }
+        
+
+        document.addEventListener("DOMContentLoaded", () => {
+    const body = document.body;
+    body.requestFullscreen().catch(err => console.error(err));
+});
+
+    </script>
+</body>
+</html>

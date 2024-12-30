@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Camera Access</title>
+</head>
+<body>
+    <h1>Test Camera Access</h1>
+    <video id="video" width="100%" autoplay></video>
+
+    <script>
+        // Function to start video stream
+        function startVideoStream() {
+            // Check for camera access permission
+            navigator.mediaDevices.getUserMedia({ video: true })
+            .then(function(stream) {
+                // Display the video stream in the video element
+                const video = document.getElementById('video');
+                video.srcObject = stream;
+            })
+            .catch(function(error) {
+                console.error("Error accessing the camera:", error);
+                alert("Unable to access camera. Check if the camera is allowed for this site.");
+            });
+        }
+
+        // Start the video stream when the page loads
+        window.onload = startVideoStream;
+    </script>
+</body>
+</html>
